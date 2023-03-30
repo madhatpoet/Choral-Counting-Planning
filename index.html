@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choral Counting Planning</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="content">
+        <h1>Choral Counting Planning</h1>
+        <div id="controls">
+            <div class="start-input"><span class="input-label">Start</span><input class="control-input" type="text" name="start" id="start"></div>
+            <div class="increment-input"><span class="input-label">Increment</span><input class="control-input" type="text" name="increment" id="increment"></div>
+            <div class="columns-input"><span class="input-label">Columns</span><input class="control-input"  type="number" name="columns" id="columns" min="1" step="1"></div>
+            <div class="rows-input"><span class="input-label">Rows</span><input class="control-input" type="number" name="rows" id="rows" min="1" step="1"></div>
+        </div>
+        <div id="display">
+            <table id="choral-table">
+            </table>
+        </div>
+    </div>
+</body>
+<script src="js/script.js"></script>
+</html>
