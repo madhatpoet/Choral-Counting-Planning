@@ -22,7 +22,8 @@ body
     grid-template-rows: auto auto;
     grid-template-areas: "start increment" "columns rows";
     text-align: right;
-    gap: 8px;
+    gap: 1.5ch;
+    margin: 0;
    
     .start-input
     {
@@ -32,6 +33,7 @@ body
     .increment-input
     {
         grid-area: increment;
+        text-align: left;
     }
 
     .columns-input
@@ -42,6 +44,12 @@ body
     .rows-input
     {
         grid-area: rows;
+        text-align: left;
+        
+        .input-label
+        {
+            padding-left: 4ch;
+        }
     }
 
     .input-label

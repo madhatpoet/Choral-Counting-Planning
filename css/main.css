@@ -19,19 +19,25 @@ body {
   grid-template-rows: auto auto;
   grid-template-areas: "start increment" "columns rows";
   text-align: right;
-  gap: 8px;
+  gap: 1.5ch;
+  margin: 0;
 }
 #controls .start-input {
   grid-area: start;
 }
 #controls .increment-input {
   grid-area: increment;
+  text-align: left;
 }
 #controls .columns-input {
   grid-area: columns;
 }
 #controls .rows-input {
   grid-area: rows;
+  text-align: left;
+}
+#controls .rows-input .input-label {
+  padding-left: 4ch;
 }
 #controls .input-label {
   margin-right: 1ch;

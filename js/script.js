@@ -133,7 +133,7 @@ $( document ).ready(function() {
         }
         else
         {
-            html = generateTableNums(parseInt(start),parseInt(increment),columns,rows);
+            html = generateTableNums(parseFloat(start),parseFloat(increment),columns,rows);
         }
         $("#choral-table").html(html);
     }
@@ -146,9 +146,22 @@ $( document ).ready(function() {
         $("#rows").val(5);
     }
     
-    $(".control-input").focusout(function() {
+    $(".control-input").change(function() {
         refreshTable();
-      })
+      }) 	
+
+    // $(".control-input").focusout(function() {
+    //     refreshTable();
+    //   }) 	
+
+    // $( ".columns-input" ).change(function() {
+    //     refreshTable();
+    // });
+
+    // $( ".rows-input" ).change(function() {
+    //     refreshTable();
+    // });
+
 
       $(document).on('keypress',function(e) {
         if(e.which == 13) {
