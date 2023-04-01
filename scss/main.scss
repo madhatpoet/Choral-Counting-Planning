@@ -1,3 +1,8 @@
+:root
+{
+    --text-color: black;
+}
+
 body
 {
     display: grid;
@@ -7,6 +12,7 @@ body
     min-height: 90vh;
     background-color: rgb(4, 211, 244, 0.5);
     font-size: 18pt;
+    color: var(--text-color);
 }
 
 .content
@@ -79,4 +85,38 @@ body
         min-width:3ch;
         background-color: white;
     }
+}
+
+.fraction
+{
+    --fraction-bar-thickness: 0.1ch;
+    --fraction-color: var(--text-color);
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: "numerator" "denominator";
+    color: var(--fraction-color);
+}
+
+@mixin fraction-number
+{
+    display: block;
+    min-width: 2ch;
+    padding: 0.2ch;
+    text-align: center;
+}
+
+.numerator
+{
+    @include fraction-number;
+    grid-area: numerator;
+    border-bottom: solid var(--fraction-color) var(--fraction-bar-thickness);
+}
+
+.denominator
+{
+    @include fraction-number;
+    grid-area: denominator;
+    border-top: solid var(--fraction-color) var(--fraction-bar-thickness);
 }
