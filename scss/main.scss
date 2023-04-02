@@ -87,6 +87,28 @@ body
     }
 }
 
+.mixed-number
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: "left right";
+    gap: 1ch;
+
+    .left-part
+    {
+        grid-area: left;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .fraction
+    {
+        grid-area: right;
+    }
+}
+
 .fraction
 {
     --fraction-bar-thickness: 0.1ch;
@@ -97,26 +119,26 @@ body
     grid-template-rows: 1fr 1fr;
     grid-template-areas: "numerator" "denominator";
     color: var(--fraction-color);
-}
 
-@mixin fraction-number
-{
-    display: block;
-    min-width: 2ch;
-    padding: 0.2ch;
-    text-align: center;
-}
+    @mixin fraction-number
+    {
+        display: block;
+        min-width: 2ch;
+        padding: 0.2ch;
+        text-align: center;
+    }
 
-.numerator
-{
-    @include fraction-number;
-    grid-area: numerator;
-    border-bottom: solid var(--fraction-color) var(--fraction-bar-thickness);
-}
+    .numerator
+    {
+        @include fraction-number;
+        grid-area: numerator;
+        border-bottom: solid var(--fraction-color) var(--fraction-bar-thickness);
+    }
 
-.denominator
-{
-    @include fraction-number;
-    grid-area: denominator;
-    border-top: solid var(--fraction-color) var(--fraction-bar-thickness);
+    .denominator
+    {
+        @include fraction-number;
+        grid-area: denominator;
+        border-top: solid var(--fraction-color) var(--fraction-bar-thickness);
+    }
 }

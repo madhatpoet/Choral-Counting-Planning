@@ -259,10 +259,10 @@ $( document ).ready(function() {
         {
            neg_text = "- ";
         }
-        html = "<div class='fraction'><div class='numerator'>" + b + "</div><div class='denominator'>" + c + "</div></div>  ";
+        html = "<div class='fraction'><div class='numerator'>" + b + "</div><div class='denominator'>" + c + "</div></div>";
         if (mixedNumber)
         {
-            html = neg_text + a + html;
+            html = "<div class='mixed-number'>" + "<div class='left-part'><span>" +  neg_text + a + "</span></div>" + html + "</div>";
         }
         return html;
     }

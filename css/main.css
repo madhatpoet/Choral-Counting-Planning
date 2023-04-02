@@ -67,6 +67,23 @@ body {
   background-color: white;
 }
 
+.mixed-number {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "left right";
+  gap: 1ch;
+}
+.mixed-number .left-part {
+  grid-area: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.mixed-number .fraction {
+  grid-area: right;
+}
+
 .fraction {
   --fraction-bar-thickness: 0.1ch;
   --fraction-color: var(--text-color);
@@ -76,8 +93,7 @@ body {
   grid-template-areas: "numerator" "denominator";
   color: var(--fraction-color);
 }
-
-.numerator {
+.fraction .numerator {
   display: block;
   min-width: 2ch;
   padding: 0.2ch;
@@ -85,8 +101,7 @@ body {
   grid-area: numerator;
   border-bottom: solid var(--fraction-color) var(--fraction-bar-thickness);
 }
-
-.denominator {
+.fraction .denominator {
   display: block;
   min-width: 2ch;
   padding: 0.2ch;
