@@ -59,6 +59,14 @@ $( document ).ready(function() {
         if(!checkForAny(eq.slice(1),["+","-"]) && checkForAny(eq,["x"])) // ax + 0
         {
             eq = eq.replace("x","");
+            if (eq == "-")
+            {
+                eq = "-1";
+            }
+            if (eq == "")
+            {
+                eq = "1";
+            }
             return [parseFloat(eq),0];
         }
 
