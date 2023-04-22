@@ -360,7 +360,39 @@ $( document ).ready(function() {
                 new_numerator *= -1;
             }
             return [0,new_numerator,num_1_denominator,negative];
-}
+    }
+
+    function generateTableFib(first,second,columns,rows)
+    {
+        var html = "\t<tr>" + "\n\t\t" + "<td>" + first + "</td>\n";
+        html += "\t\t" + "<td>" + second + "</td>\n";
+        var a = first;
+        var b = second;
+        for(let i = 3; i<=columns; i++)
+        {
+            var value = a + b;
+            html += "\n\t\t" + "<td>" + value + "</td>";
+            a = b;
+            b = value;
+            value = fixDecimal(value,first,a-b);
+        }
+        html += "\t</tr>\n";
+        for(let i = 1; i<=rows - 1; i++)
+        {
+            var row_html = "\t<tr>";
+            for(let j = 1; j<=columns; j++)
+            {
+                var value = a + b;
+                row_html += "\n\t\t" + "x<td>" + value + "</td>";
+                a = b;
+                b = value;
+                value = fixDecimal(value,first,a-b);
+            }
+            row_html += "\n\t</tr>\n";
+            html += row_html;
+        }
+        return html;
+    }
 
     function generateTableNums(start,increment,columns,rows)
     {
@@ -441,6 +473,18 @@ $( document ).ready(function() {
             start = findRationalValues(start);
             increment = findRationalValues(increment);
             html = generateTableRational(start,increment,columns,rows);
+        }
+        else if(checkForAny(start,["fib"]) || checkForAny(increment,["fib"]))
+        {
+            start = start.replace("fib","");
+            start = start.replace("  ","");
+            increment = increment.replace("fib","");
+            increment = increment.replace(" ","");
+            if (increment == "" || increment == " ")
+            {
+                increment = start;
+            }
+            html = generateTableFib(parseFloat(start),parseFloat(increment),columns,rows);
         }
         else
         {
