@@ -101,7 +101,7 @@ $( document ).ready(function() {
             var term = terms[i];
             if(!term.includes("x"))
             {
-                coefficients[0] += parseInt(term);
+                coefficients[0] += parseFloat(term);
             }
             else if(!term.includes("x^"))
             {
@@ -114,7 +114,7 @@ $( document ).ready(function() {
                 {
                     co = "-1";
                 }
-                coefficients[1] += parseInt(co);
+                coefficients[1] += parseFloat(co);
             }
         }
         for (c = 2; c<coefficients.length; c++)
@@ -133,7 +133,7 @@ $( document ).ready(function() {
                     {
                         co = "-1";
                     }
-                    coefficients[c] += parseInt(co);
+                    coefficients[c] += parseFloat(co);
                 }
             }
         }
@@ -417,12 +417,27 @@ $( document ).ready(function() {
         return html;
     }
 
-    function incrementValues(initial, increment)
+    function incrementDegrees(initial, increment, cutOffAt360, include360)
+    {
+        var value = initial + increment;
+        while(cutOffAt360 && value > 360)
+        {
+            value -= 360;
+        }
+        if (!include360 && value == 360)
+        {
+            value = 0;
+        }
+        return value;
+    }
+
+    function incrementValues(start, initial, increment)
     {
         var newValues = [];
         for(let i = 0; i<initial.length;i++)
         {
             newValues[i] = initial[i] + increment[i];
+            newValues[i] = fixDecimal(newValues[i],initial[i],increment[i]);
         }
         return newValues;
     }
@@ -504,6 +519,51 @@ $( document ).ready(function() {
             return [0,new_numerator,num_1_denominator,negative];
     }
 
+    function generateTableDegrees(start,increment,columns,rows)
+    {
+        var cutOffAt360 = false;
+        var include360 = false;
+        if (start.includes("degc"))
+        {
+            start = start.replace("degc","")
+            cutOffAt360 = true;
+            if (start.includes("i"))
+            {
+                start = start.replace("i","")
+                include360 = true;
+            }
+        }
+        if (increment.includes("degc"))
+        {
+            increment = increment.replace("degc","")
+            cutOffAt360 = true;
+            if (increment.includes("i"))
+            {
+                increment = increment.replace("i","")
+                include360 = true;
+            }
+        }
+        start = start.replace("deg","").replace(" ","");
+        increment = increment.replace("deg","").replace(" ","");
+        start = parseFloat(start);
+        var value = start;
+        var increment = parseFloat(increment);
+        var html = "";
+        for(let i = 1; i<=rows; i++)
+        {
+            var row_html = "\t<tr>";
+            for(let j = 1; j<=columns; j++)
+            {
+                value = fixDecimal(value,start,increment);
+                row_html += "\n\t\t" + "<td>" + value + "&deg;</td>";
+                value = incrementDegrees(value, increment, cutOffAt360, include360);
+            }
+            row_html += "\n\t</tr>\n";
+            html += row_html;
+        }
+        return html;
+    }
+
     function generateTableFib(first,second,columns,rows)
     {
         var html = "\t<tr>" + "\n\t\t" + "<td>" + first + "</td>\n";
@@ -566,7 +626,7 @@ $( document ).ready(function() {
             {
                 var expression = generatePolynomial(values);
                 row_html += "\n\t\t" + "<td>" + expression + "</td>";
-                values = incrementValues(values,increment);
+                values = incrementValues(start,values,increment);
             }
             row_html += "\n\t</tr>\n";
             html += row_html;
@@ -585,7 +645,7 @@ $( document ).ready(function() {
             {
                 var expression = generateExpression(values);
                 row_html += "\n\t\t" + "<td>" + expression + "</td>";
-                values = incrementValues(values,increment);
+                values = incrementValues(start,values,increment);
             }
             row_html += "\n\t</tr>\n";
             html += row_html;
@@ -623,7 +683,7 @@ $( document ).ready(function() {
         const columns = parseInt($("#columns").val());
         const rows = parseInt($("#rows").val());
         var html = "";
-        if (checkForAny(start,["x^","X^"]) || checkForAny(increment,["x^","X^"])) //Check if either is an expression
+        if (checkForAny(start,["x^","X^"]) || checkForAny(increment,["x^","X^"])) //Check if either is a polynomial
         {
             highest_power = findHighestPower(start,increment)
             start = processPolynomial(start, highest_power);
@@ -642,7 +702,11 @@ $( document ).ready(function() {
             increment = findRationalValues(increment);
             html = generateTableRational(start,increment,columns,rows);
         }
-        else if(checkForAny(start,["fib"]) || checkForAny(increment,["fib"]))
+        else if(checkForAny(start,["deg"]) || checkForAny(increment,["deg"]))  //Check if using degrees
+        {
+            html = generateTableDegrees(start,increment,columns,rows);
+        }
+        else if(checkForAny(start,["fib"]) || checkForAny(increment,["fib"])) //Check for fibonacci numbers
         {
             start = start.replace("fib","");
             start = start.replace("  ","");
@@ -656,7 +720,7 @@ $( document ).ready(function() {
         }
         else
         {
-            html = generateTableNums(parseFloat(start),parseFloat(increment),columns,rows);
+            html = generateTableNums(parseFloat(start),parseFloat(increment),columns,rows); //Original integer / float based counting
         }
         $("#choral-table").html(html);
     }
