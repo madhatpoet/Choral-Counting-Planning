@@ -43,6 +43,103 @@ $( document ).ready(function() {
         }
         return parseFloat(value.toFixed(dec_places));
     }
+
+    function bigger(a,b)
+    {
+        if (a > b)
+        {
+            return a;
+        }
+        return b;
+    }
+
+    function findHighestPower_oneEx(exp)
+    {
+        exp = exp.replace(" ","");
+        exp = exp.replace("-","+");
+        var highPower = 0;
+        var termList = exp.split("+");
+        for (i = 0; i<termList.length;i++)
+        {
+            var item = termList[i];
+            var power = 0;
+            if(checkForAny(item, ["x","X"]))
+            {
+                if(!item.includes("^"))
+                {
+                    power = 1;
+                }
+                else
+                {
+                    item = item.split("^");
+                    power = parseInt(item[1]);
+                }
+            }
+
+            if (power > highPower)
+            {
+                highPower = power
+            }
+        }
+        return highPower;
+    }
+
+    function findHighestPower(exp1, exp2)
+    {
+        const high_1 = findHighestPower_oneEx(exp1);
+        const high_2 = findHighestPower_oneEx(exp2);
+        return bigger(high_1,high_2);
+    }
+
+    function processPolynomial(exp, highest_power)
+    {
+        var coefficients = Array(highest_power + 1).fill(0);
+        exp = exp.replace("-","+-").toLowerCase();
+        var terms = exp.split("+");
+        for (i = 0; i<terms.length; i++)
+        {
+            var term = terms[i];
+            if(!term.includes("x"))
+            {
+                coefficients[0] += parseInt(term);
+            }
+            else if(!term.includes("x^"))
+            {
+                var co = term.replace("x","")
+                if(co == "")
+                {
+                    co = "1";
+                }
+                else if (co == "-")
+                {
+                    co = "-1";
+                }
+                coefficients[1] += parseInt(co);
+            }
+        }
+        for (c = 2; c<coefficients.length; c++)
+        {
+            for (i=0; i<terms.length; i++)
+            {
+                var term = terms[i];
+                if (term.includes("^" + c))
+                {
+                    var co = term.replace("x^" + c,"")
+                    if(co == "")
+                    {
+                        co = "1";
+                    }
+                    else if (co == "-")
+                    {
+                        co = "-1";
+                    }
+                    coefficients[c] += parseInt(co);
+                }
+            }
+        }
+        return coefficients;
+    }
+
     function findAB(eq)
     {
         eq = eq.trim();
@@ -200,6 +297,51 @@ $( document ).ready(function() {
         
         var return_values = [[num_1_whole,num_1_numerator,num_1_denominator,num_1_negative],[num_2_whole,num_2_numerator,num_2_denominator,num_2_negative],divisors];
         return return_values;
+    }
+
+    function generatePolynomial(coefficients)
+    {
+        var polynomial = "|";
+        if (coefficients[0] != 0)
+        {
+            polynomial = coefficients[0].toString() + " + " + polynomial;
+        }
+        if (coefficients[1] != 0)
+        {
+            if(coefficients[1] == 1)
+            {
+                polynomial = "x + " + polynomial;
+            }
+            else if (coefficients[1] == -1)
+            {
+                polynomial = "-x + " + polynomial;
+            }
+            else
+            {
+                polynomial = coefficients[1].toString() + "x + " + polynomial;
+            }
+        }
+        for(i=2; i<coefficients.length; i++)
+        {
+            if(coefficients[i] != 0)
+            {
+                if(coefficients[i] == 1)
+                {
+                    polynomial = "x<sup>" + i.toString() + "</sup> + " + polynomial;
+                }
+                else if (coefficients[i] == -1)
+                {
+                    polynomial = "-x<sup>" + i.toString() + "</sup> + " + polynomial;
+                }
+                else
+                {   
+                    polynomial = coefficients[i].toString() + "x<sup>" + i.toString() + "</sup> + " + polynomial;
+                }
+             }
+        }
+        polynomial = polynomial.replace("+ -","- ");
+        polynomial = polynomial.replace(" + |","");
+        return polynomial;
     }
 
     function generateExpression(values)
@@ -413,6 +555,25 @@ $( document ).ready(function() {
         return html;
     }
 
+    function generateTablePolynomial(start,increment,columns,rows)
+    {
+        var values = start;
+        var html = "";
+        for(let i = 1; i<=rows; i++)
+        {
+            var row_html = "\t<tr>";
+            for(let j = 1; j<=columns; j++)
+            {
+                var expression = generatePolynomial(values);
+                row_html += "\n\t\t" + "<td>" + expression + "</td>";
+                values = incrementValues(values,increment);
+            }
+            row_html += "\n\t</tr>\n";
+            html += row_html;
+        }
+        return html;
+    }
+
     function generateTableExpression(start,increment,columns,rows)
     {
         var values = start;
@@ -462,7 +623,14 @@ $( document ).ready(function() {
         const columns = parseInt($("#columns").val());
         const rows = parseInt($("#rows").val());
         var html = "";
-        if (checkForAny(start,["x","X"]) || checkForAny(increment,["x","X"])) //Check if either is an expression
+        if (checkForAny(start,["x^","X^"]) || checkForAny(increment,["x^","X^"])) //Check if either is an expression
+        {
+            highest_power = findHighestPower(start,increment)
+            start = processPolynomial(start, highest_power);
+            increment = processPolynomial(increment, highest_power);
+            html = generateTablePolynomial(start,increment,columns,rows);
+        }
+        else if (checkForAny(start,["x","X"]) || checkForAny(increment,["x","X"])) //Check if either is an expression
         {
             start = findAB(start);
             increment = findAB(increment);
